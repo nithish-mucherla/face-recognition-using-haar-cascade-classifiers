@@ -3,8 +3,8 @@ import cv2
 from PIL import Image
 import os
 
-path = 'F:/howle/Desktop/COURSES/WIN SEM 19-20/MLt/J/Face recog/faces/'
-cascadePath = 'F:/howle/Desktop/COURSES/WIN SEM 19-20/MLt/J/Face recog/haarcascade_frontalface_default.xml'
+path = 'faces/' #give full path to the folder where you want to store the faces data
+cascadePath = 'haarcascade_frontalface_default.xml' #give full path to the file 
 face_cascade = cv2.CascadeClassifier(cascadePath)
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 def create_db():    
@@ -18,7 +18,7 @@ def create_db():
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
         for (x,y,w,h) in faces:
             sampleN=sampleN+1;
-            cv2.imwrite("F:/howle/Desktop/COURSES/WIN SEM 19-20/MLt/J/Face recog/faces/."+str(id)+ "." +str(sampleN)+ ".jpg", gray[y:y+h, x:x+w])
+            cv2.imwrite("faces/."+str(id)+ "." +str(sampleN)+ ".jpg", gray[y:y+h, x:x+w]) #give full path in place of faces/. Here faces/ is the folder where faces data wil be stored
             cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
             cv2.waitKey(100)
         cv2.imshow('img',img)
@@ -54,18 +54,18 @@ def train():
     print(ids)
     recognizer.train(faces, np.array(ids))
     # Save the model into trainer/trainer.yml
-    recognizer.write('F:/howle/Desktop/COURSES/WIN SEM 19-20/MLt/J/Face recog/trash.yml') # recognizer.save() worked on Mac, but not on Pi
+    recognizer.write('train.yml') # give the path where you want to store the yml file
     # Print the numer of faces trained and end program
     print("\n [INFO] {0} faces trained. Exiting Program".format(len(np.unique(ids))))
     
 def face_recog():
     l=[]
-    recognizer.read('F:/howle/Desktop/COURSES/WIN SEM 19-20/MLt/J/Face recog/trash.yml')
+    recognizer.read('train.yml') #path to the train.yml file
     faceCascade = cv2.CascadeClassifier(cascadePath);
     font = cv2.FONT_HERSHEY_SIMPLEX
     id = 0
     # names related to ids: example ==> Marcelo: id=1,  etc
-    names = ['none','nithish','Laddu']
+    names = ['none'] #add names in this list in the order of dataset creation. 
     # Initialize and start realtime video capture
     cam = cv2.VideoCapture(0)
     cam.set(3, 640) # set video widht
